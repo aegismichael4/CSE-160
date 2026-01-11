@@ -115,7 +115,7 @@ class Vector3 {
     }
 
     static areaTriangle(other1, other2) {
-        return this.cross(other1, other2).magnitude();
+        return this.cross(other1, other2).magnitude() / 2;
     }
 
     /**
