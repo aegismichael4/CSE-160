@@ -1,37 +1,46 @@
 class Triangle {
 
-    constructor(vertices, rgba) {
+    constructor(xy, rgba, size) {
 
-        this.vertices = vertices;
         this.rgba = rgba;
+        this.xy = xy;
+        this.size = size;
     }
 
-    function render() {
-        var n = 3; // The number of vertices
+    render() {
 
-        // Create a buffer object
-        var vertexBuffer = gl.createBuffer();
-        if (!vertexBuffer) {
-            console.log('Failed to create the buffer object');
-            return -1;
-        }
+        //Pass the size of a point to u_Size variable
+        gl.uniform1f(u_Size, this.size);
+        // Pass the color of a point to u_FragColor variable
+        gl.uniform4f(u_FragColor, this.rgba[0], this.rgba[1], this.rgba[2], this.rgba[3]);
 
-        // Bind the buffer object to target
-        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-        // Write date into the buffer object
-        gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+        var d = this.size / 200; // delta
+        drawTriangle([this.xy[0] - d, this.xy[1], this.xy[0]+d, this.xy[1], this.xy[0], this.xy[1] + d * 2]);
 
-        var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
-        if (a_Position < 0) {
-            console.log('Failed to get the storage location of a_Position');
-            return -1;
-        }
-        // Assign the buffer object to a_Position variable
-        gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
-
-        // Enable the assignment to a_Position variable
-        gl.enableVertexAttribArray(a_Position);
-
-        return n;
+        console.log("draw triangle!!!");
     }
+}
+
+function drawTriangle(vertices) {
+    // Create a buffer object
+    var vertexBuffer = gl.createBuffer();
+    if (!vertexBuffer) {
+        console.log('Failed to create the buffer object');
+        return -1;
+    }
+
+    // Bind the buffer object to target
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+
+    // Write date into the buffer object
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.DYNAMIC_DRAW);
+    
+    // Assign the buffer object to a_Position variable
+    gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+
+    // Enable the assignment to a_Position variable
+    gl.enableVertexAttribArray(a_Position);
+
+    // Draw
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
 }

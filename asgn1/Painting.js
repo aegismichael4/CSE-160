@@ -70,6 +70,7 @@ function main() {
   connectVariablesToGLSL();
   
   setUpClearButton();
+  setUpShapeTypeButtons();
 
   // Register function (event handler) to be called on a mouse press
   canvas.onmousedown = click;
@@ -83,7 +84,7 @@ function main() {
 }
 
 var g_points = [];
-var g_selectedType;
+var g_selectedType = 0; // point
 
 function click(ev) {
 
@@ -91,7 +92,16 @@ function click(ev) {
 
   let [x,y] = convertCoordinatesEventToGL(ev);
 
-  g_points.push(new Point([x,y], readUserRGB(), readUserSize()));
+  switch (g_selectedType) {
+    case 0: // point
+      g_points.push(new Point([x,y], readUserRGB(), readUserSize()));
+      break;
+    case 1: // triangle
+      g_points.push(new Triangle([x,y], readUserRGB(), readUserSize()));
+      break;
+  }
+
+  //g_points.push(new Point([x,y], readUserRGB(), readUserSize()));
  
   renderAllShapes();
 }
@@ -110,9 +120,9 @@ function convertCoordinatesEventToGL(ev) {
 function renderAllShapes() {
   // Clear <canvas>
   gl.clear(gl.COLOR_BUFFER_BIT);
-  g_points.forEach( (point) => {
-    point.render();
-  })
+  g_points.forEach( (shape) => {
+    shape.render();
+  });
 }
 
 function readUserRGB() {
@@ -136,15 +146,15 @@ function setUpClearButton() {
 }
 
 function setUpShapeTypeButtons() {
-  document.getElementById("point").addEventListener("click", () => {
-    g_selectedType = POINT;
-  });
+  document.getElementById("shape").addEventListener("change", () => {
 
-  document.getElementById("triangle").addEventListener("click", () => {
-    g_selectedType = TRIANGLE;
-  });
-}
-
-function drawTriangle([x1, y1, x2, y2, x3, y3]) {
-
+    switch (document.getElementById("shape").value) {
+      case "point":
+        g_selectedType = 0;
+        break;
+      case "triangle":
+        g_selectedType = 1;
+        break;
+    }
+  })
 }
