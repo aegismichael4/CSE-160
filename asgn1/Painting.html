@@ -13,11 +13,11 @@
     <script src="lib/webgl-utils.js"></script>
     <script src="lib/webgl-debug.js"></script>
     <script src="lib/cuon-utils.js"></script>
-    <script src="ColoredPoints.js"></script>
+    <script src="Painting.js"></script>
+    <script src="Point.js"></script>
 
     <div>
       <label>Shape Color:</label>
-      <br></br>
 
       <label for="red">R</label>
       <input type="range" id="red" name="red" min="0" max="1" step=".01"/>
@@ -32,12 +32,17 @@
     <br></br>
 
     <div>
-      <label>Shape Size:</label>
+      <label>Shape:</label>
+      <button id="point">Point</button>
+      <button id="triangle">Triangle</button>
+
+      <label>Size:</label>
       <input type="range" id="size" name="size" min="3" max="50" step="1"/>
     </div>
 
+    <br></br>
+
     <div>
-      <br></br>
       <button id="clear" name="clear">Clear</button>
     </div>
   </body>
