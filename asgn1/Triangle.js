@@ -17,7 +17,6 @@ class Triangle {
         var d = this.size / 200; // delta
         drawTriangle([this.xy[0] - d, this.xy[1], this.xy[0]+d, this.xy[1], this.xy[0], this.xy[1] + d * 2]);
 
-        console.log("draw triangle!!!");
     }
 }
 
@@ -44,3 +43,4 @@ function drawTriangle(vertices) {
     // Draw
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 }
+

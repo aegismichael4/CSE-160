@@ -10,6 +10,9 @@ class Point {
   }
 
   render() {
+
+    //Quit using the buffer to send the attribute
+    gl.disableVertexAttribArray(a_Position);
     // Pass the position of a point to a_Position variable
     gl.vertexAttrib3f(a_Position, this.xy[0], this.xy[1], 0.0);
     //Pass the size of a point to u_Size variable

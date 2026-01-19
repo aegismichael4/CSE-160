@@ -71,6 +71,7 @@ function main() {
   
   setUpClearButton();
   setUpShapeTypeButtons();
+  setUpDrawPictureButton();
 
   // Register function (event handler) to be called on a mouse press
   canvas.onmousedown = click;
@@ -98,6 +99,9 @@ function click(ev) {
       break;
     case 1: // triangle
       g_points.push(new Triangle([x,y], readUserRGB(), readUserSize()));
+      break;
+    case 2: // circle
+      g_points.push(new Circle([x,y], readUserRGB(), readUserSize(), readUserCircleSegments()));
       break;
   }
 
@@ -138,6 +142,10 @@ function readUserSize() {
   return document.getElementById("size").value;
 }
 
+function readUserCircleSegments() {
+  return document.getElementById("segments").value;
+}
+
 function setUpClearButton() {
   document.getElementById("clear").addEventListener("click", () => {
     g_points = [];
@@ -155,6 +163,15 @@ function setUpShapeTypeButtons() {
       case "triangle":
         g_selectedType = 1;
         break;
+      case "circle":
+        g_selectedType = 2;
+        break;
     }
   })
+}
+
+function setUpDrawPictureButton() {
+  document.getElementById("picture").addEventListener("click", () => {
+    new Picture();
+  });
 }
