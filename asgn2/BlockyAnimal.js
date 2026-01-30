@@ -37,6 +37,8 @@ function setUpWebGL() {
         console.log('Failed to get the rendering context for WebGL');
         return;
     }
+
+    gl.enable(gl.DEPTH_TEST);
 }
 
 function connectVariablesToGLSL() {
@@ -148,15 +150,12 @@ function renderAllShapes() {
   // check the time at the start of the function
   var startTime = performance.now();
 
+  // Clear <canvas>
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
   // pass the global rotation into u_GlobalRotateMatrix
   var globalRotMat = new Matrix4().rotate(g_globalAngle, 0, 1, 0);
   gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
-
-  // Clear <canvas>
-  gl.clear(gl.COLOR_BUFFER_BIT);
-
-  //draw a test triangle
-  drawTriangle3D( [-1.0,0.0,0.0, -0.5,-1.0,0.0, 0.0,0.0,0.0] );
 
   //draw the body cube
   var body = new Cube();
@@ -222,9 +221,9 @@ function setUpShapeTypeButtons() {
 }
 
 function setUpRotateSlider() {
-  const rot = document.getElementById("rotation");
-  rot.addEventListener("change", () => {
-    g_globalAngle = rot.value;
+  const slider = document.getElementById("rotation");
+  slider.addEventListener("input", () => {
+    g_globalAngle = slider.value;
     renderAllShapes();
   });
 }
