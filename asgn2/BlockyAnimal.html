@@ -10,18 +10,25 @@
     <canvas id="webgl" width="400" height="400" display="flex" style="margin: 0px 10px 0px 0px;">
     Please use a browser that supports "canvas"
     </canvas>
+    <p id="fps" style="margin-top: 0px;"></p>
 
-    <script src="lib/webgl-utils.js"></script>
-    <script src="lib/webgl-debug.js"></script>
-    <script src="lib/cuon-utils.js"></script>
+    <script src="../lib/webgl-utils.js"></script>
+    <script src="../lib/webgl-debug.js"></script>
+    <script src="../lib/cuon-utils.js"></script>
+    <script src="../lib/cuon-matrix.js"></script>
     <script src="BlockyAnimal.js"></script>
     <script src="Point.js"></script>
     <script src="Triangle.js"></script>
     <script src="Circle.js"></script>
     <script src="Picture.js"></script>
-    <scrip src="Cube.js"></scrip>
+    <script src="Cube.js"></script>
 
-    <div style="margin: 10px 0px 0px 0px">
+    <div>
+      <label>Rotation:</label>
+      <input type="range" id="rotation" min="0" max="90" value="0"/>
+    </div>
+
+    <div style="margin: 20px 0px 0px 0px">
       <label>Shape Color:</label>
 
       <label for="red">R</label>
