@@ -105,7 +105,7 @@ function main() {
   
   setUpWebGL();
   connectVariablesToGLSL();
-  setUpRotateSlider();
+  setUpHTMLElements();
 
   // Register function (event handler) to be called on a mouse press
   canvas.onmousedown = click;
@@ -122,6 +122,7 @@ var g_selectedType = 0; // point
 var g_globalAngle = 0;
 var g_startTime = performance.now() / 1000;
 var g_seconds = 0;
+var g_animationPlaying = false;
 
  function click(ev) {
   console.log("click!");
@@ -153,19 +154,26 @@ function renderAllShapes() {
   sendTextToHTML(" ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration), "fps");
 }
 
+var g_bodyMat = new Matrix4();
+
 function setUpSheep() {
 
-var body = new Cube();
-body.rgba = [1,1,1,1];
-body.setScale(.2,1.2,0.5);
-body.setTranslate(0,0,0);
-body.setRotation(10);
-body.render();
+  animation();
+
+  var body = new Cube();
+  body.rgba = [1,1,1,1];
+  body.matrix = g_bodyMat;
+  body.setScale(.2,1.2,0.5);
+  body.setTranslate(0,0,0);
+  body.setRotation(10);
+  body.render();
 
 }
 
 function animation() {
+  if (!g_animationPlaying) return;
 
+  g_bodyMat.rotate(Math.sin(g_seconds), 0, 0, 1);
 }
 
 function tick() {
@@ -187,10 +195,20 @@ function sendTextToHTML(text, htmlID) {
   htmlElm.innerHTML = text;
 }
 
-function setUpRotateSlider() {
+function setUpHTMLElements() {
   const slider = document.getElementById("rotation");
   slider.addEventListener("input", () => {
     g_globalAngle = slider.value;
+  });
+
+  const animationOn = document.getElementById("animationOn");
+  animationOn.addEventListener("click", () => {
+    g_animationPlaying = true;
+  });
+
+  const animationOff = document.getElementById("animationOff");
+  animationOff.addEventListener("click", () => {
+    g_animationPlaying = false;
   });
 }
 
