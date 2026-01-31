@@ -3,14 +3,41 @@ class Cube {
     constructor(rgba) {
         this.rgba = rgba;
         this.matrix = new Matrix4();
+        this.scale = [1,1,1];
+        this.translate = [0,0,0];
+        this.rotAxis = [0,0,1];
+        this.rot = 0;
+    }
+
+    setScale(x, y, z) {
+        this.scale = [x,y,z];
+    }
+
+    setTranslate(x, y, z) {
+        this.translate = [x,y,z];
+    }
+
+    setRotationAxis(x,y,z) {
+        this.rotAxis = [x,y,z];
+    }
+
+    setRotation(degrees) {
+        this.rot = degrees;
     }
 
     render() {
+
+        const transMat = new Matrix4(this.matrix);
+
+        transMat.translate(this.scale[0]*-.5 + this.translate[0], this.scale[1]*-.5 + this.translate[1], this.scale[2]*-.5 + this.translate[2]); // center based on scale
+        transMat.rotate(this.rot, this.rotAxis[0], this.rotAxis[1], this.rotAxis[2]);
+        transMat.scale(this.scale[0], this.scale[1], this.scale[2]);
+
         // pass in color
         gl.uniform4f(u_FragColor, this.rgba[0], this.rgba[1], this.rgba[2], this.rgba[3]);
 
         //pass the matrix to u_ModelMatrix
-        gl.uniformMatrix4fv(u_ModelMatrix, false, this.matrix.elements);
+        gl.uniformMatrix4fv(u_ModelMatrix, false, transMat.elements);
     
         // front of cube
         drawTriangle3D( [0.0,0.0,0.0, 1.0,1.0,0.0, 1.0,0.0,0.0 ]);

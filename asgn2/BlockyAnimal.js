@@ -88,53 +88,6 @@ function connectVariablesToGLSL() {
     gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
 }
 
-//#endregion
-
-function main() {
-  
-  setUpWebGL();
-  connectVariablesToGLSL();
-  
-  setUpClearButton();
-  setUpShapeTypeButtons();
-  setUpDrawPictureButton();
-  setUpRotateSlider();
-
-  // Register function (event handler) to be called on a mouse press
-  canvas.onmousedown = click;
-  canvas.onmousemove = click;
-
-  // Specify the color for clearing <canvas>
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
-
-  renderAllShapes();
-}
-
-var g_points = [];
-var g_selectedType = 0; // point
-var g_globalAngle = 0;
-
-function click(ev) {
-
-  if (ev.buttons != 1) return;
-
-  let [x,y] = convertCoordinatesEventToGL(ev);
-
-  switch (g_selectedType) {
-    case 0: // point
-      g_points.push(new Point([x,y], readUserRGB(), readUserSize()));
-      break;
-    case 1: // triangle
-      g_points.push(new Triangle([x,y], readUserRGB(), readUserSize()));
-      break;
-    case 2: // circle
-      g_points.push(new Circle([x,y], readUserRGB(), readUserSize(), readUserCircleSegments()));
-      break;
-  }
- 
-  //renderAllShapes();
-}
-
 function convertCoordinatesEventToGL(ev) {
   var x = ev.clientX; // x coordinate of a mouse pointer
   var y = ev.clientY; // y coordinate of a mouse pointer
@@ -145,6 +98,36 @@ function convertCoordinatesEventToGL(ev) {
 
   return ([x,y]);
 }
+
+//#endregion
+
+function main() {
+  
+  setUpWebGL();
+  connectVariablesToGLSL();
+  setUpRotateSlider();
+
+  // Register function (event handler) to be called on a mouse press
+  canvas.onmousedown = click;
+  canvas.onmousemove = click;
+
+  // Specify the color for clearing <canvas>
+  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
+  tick();
+}
+
+var g_points = [];
+var g_selectedType = 0; // point
+var g_globalAngle = 0;
+var g_startTime = performance.now() / 1000;
+var g_seconds = 0;
+
+ function click(ev) {
+  console.log("click!");
+}
+
+//#region rendering
 
 function renderAllShapes() {
   // check the time at the start of the function
@@ -158,15 +141,40 @@ function renderAllShapes() {
   gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
 
   //draw the body cube
-  var body = new Cube();
-  body.rgba = [1.0,0.0,0.0,1.0];
-  body.matrix.translate(-0.25,-0.5,0.0);
-  body.matrix.scale(0.5,1,0.5);
-  body.render();
+  // var body = new Cube();
+  // body.rgba = [1.0,0.0,0.0,1.0];
+  // body.matrix.translate(-0.25,-0.5,0.0);
+  // body.matrix.scale(0.5,1,0.5);
+  // body.render();
+
+  setUpSheep();
 
   var duration = performance.now() - startTime;
   sendTextToHTML(" ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration), "fps");
 }
+
+function setUpSheep() {
+
+var body = new Cube();
+body.rgba = [1,1,1,1];
+body.setScale(.2,1.2,0.5);
+body.setTranslate(0,0,0);
+body.setRotation(10);
+body.render();
+
+}
+
+function animation() {
+
+}
+
+function tick() {
+  g_seconds = (performance.now() / 1000) - g_startTime;
+  renderAllShapes();
+  requestAnimationFrame(tick);
+}
+
+//#endregion
 
 //#region HTML setup
 
@@ -179,58 +187,10 @@ function sendTextToHTML(text, htmlID) {
   htmlElm.innerHTML = text;
 }
 
-function readUserRGB() {
-  let r = document.getElementById("red").value;
-  let g = document.getElementById("green").value;
-  let b = document.getElementById("blue").value;
-  let a = 1.0;
-
-  return ([r, g, b, a]);
-}
-
-function readUserSize() {
-  return document.getElementById("size").value;
-}
-
-function readUserCircleSegments() {
-  return document.getElementById("segments").value;
-}
-
-function setUpClearButton() {
-  document.getElementById("clear").addEventListener("click", () => {
-    g_points = [];
-    renderAllShapes();
-  });
-}
-
-function setUpShapeTypeButtons() {
-  document.getElementById("shape").addEventListener("change", () => {
-
-    switch (document.getElementById("shape").value) {
-      case "point":
-        g_selectedType = 0;
-        break;
-      case "triangle":
-        g_selectedType = 1;
-        break;
-      case "circle":
-        g_selectedType = 2;
-        break;
-    }
-  })
-}
-
 function setUpRotateSlider() {
   const slider = document.getElementById("rotation");
   slider.addEventListener("input", () => {
     g_globalAngle = slider.value;
-    renderAllShapes();
-  });
-}
-
-function setUpDrawPictureButton() {
-  document.getElementById("picture").addEventListener("click", () => {
-    new Picture();
   });
 }
 
