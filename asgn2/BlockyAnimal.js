@@ -16,7 +16,7 @@ var FSHADER_SOURCE =
   '  gl_FragColor = u_FragColor;\n' +
   '}\n';
 
-// Global Variables
+// Shader Variables
 let canvas;
 let gl;
 let a_Position;
@@ -101,6 +101,12 @@ function convertCoordinatesEventToGL(ev) {
 
 //#endregion
 
+// Global Variables
+var g_globalAngle = 0;
+var g_startTime = performance.now() / 1000;
+var g_seconds = 0;
+var g_animationPlaying = false;
+
 function main() {
   
   setUpWebGL();
@@ -117,18 +123,15 @@ function main() {
   tick();
 }
 
-var g_points = [];
-var g_selectedType = 0; // point
-var g_globalAngle = 0;
-var g_startTime = performance.now() / 1000;
-var g_seconds = 0;
-var g_animationPlaying = false;
-
  function click(ev) {
   console.log("click!");
 }
 
-//#region rendering
+function tick() {
+  g_seconds = (performance.now() / 1000) - g_startTime;
+  renderAllShapes();
+  requestAnimationFrame(tick);
+}
 
 function renderAllShapes() {
   // check the time at the start of the function
@@ -141,48 +144,11 @@ function renderAllShapes() {
   var globalRotMat = new Matrix4().rotate(g_globalAngle, 0, 1, 0);
   gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
 
-  //draw the body cube
-  // var body = new Cube();
-  // body.rgba = [1.0,0.0,0.0,1.0];
-  // body.matrix.translate(-0.25,-0.5,0.0);
-  // body.matrix.scale(0.5,1,0.5);
-  // body.render();
-
   setUpSheep();
 
   var duration = performance.now() - startTime;
   sendTextToHTML(" ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration), "fps");
 }
-
-var g_bodyMat = new Matrix4();
-
-function setUpSheep() {
-
-  animation();
-
-  var body = new Cube();
-  body.rgba = [1,1,1,1];
-  body.matrix = g_bodyMat;
-  body.setScale(.2,1.2,0.5);
-  body.setTranslate(0,0,0);
-  body.setRotation(10);
-  body.render();
-
-}
-
-function animation() {
-  if (!g_animationPlaying) return;
-
-  g_bodyMat.rotate(Math.sin(g_seconds), 0, 0, 1);
-}
-
-function tick() {
-  g_seconds = (performance.now() / 1000) - g_startTime;
-  renderAllShapes();
-  requestAnimationFrame(tick);
-}
-
-//#endregion
 
 //#region HTML setup
 

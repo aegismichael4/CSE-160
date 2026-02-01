@@ -17,12 +17,9 @@ class Cube {
         this.translate = [x,y,z];
     }
 
-    setRotationAxis(x,y,z) {
-        this.rotAxis = [x,y,z];
-    }
-
-    setRotation(degrees) {
+    setRotation(degrees, x, y, z) {
         this.rot = degrees;
+        this.rotAxis = [x,y,z];
     }
 
     render() {
