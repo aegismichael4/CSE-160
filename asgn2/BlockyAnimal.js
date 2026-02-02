@@ -162,19 +162,19 @@ function sendTextToHTML(text, htmlID) {
 }
 
 function setUpHTMLElements() {
-  const slider = document.getElementById("rotation");
-  slider.addEventListener("input", () => {
-    g_globalAngle = slider.value;
+  const cameraAngle = document.getElementById("cameraAngle");
+  cameraAngle.addEventListener("input", () => {
+    g_globalAngle = cameraAngle.value;
   });
 
   const thigh = document.getElementById("thigh");
   thigh.addEventListener("input", () => {
-    g_backThighRot = thigh.value;
+    g_backThighRot = parseFloat(thigh.value);
   });
 
   const calf = document.getElementById("calf");
   calf.addEventListener("input", () => {
-    g_backCalfRot = calf.value;
+    g_backCalfRot = parseFloat(calf.value);
   });
 
   const animationOn = document.getElementById("animationOn");
