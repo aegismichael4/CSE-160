@@ -22,6 +22,13 @@ class Cube {
         this.rotAxis = [x,y,z];
     }
 
+    getTranslatedMatrix() {
+        const transMat = new Matrix4(this.matrix);
+        transMat.translate(this.scale[0]*-.5 + this.translate[0], this.scale[1]*-.5 + this.translate[1], this.scale[2]*-.5 + this.translate[2]); // center based on scale
+        transMat.rotate(this.rot, this.rotAxis[0], this.rotAxis[1], this.rotAxis[2]);
+        return transMat;
+    }
+
     render() {
 
         const transMat = new Matrix4(this.matrix);
