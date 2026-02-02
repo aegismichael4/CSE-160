@@ -2,12 +2,39 @@
 
 <head>
 
+    <title>CSE 160 - Aegis Michael</title>
+
 </head>
 
 <body>
-    <p>Hello, CSE-160!</p>
+
+    <style>
+        .directory > button {
+            padding: 10px;
+            border-radius: 12px;
+            display: block;
+            margin: 5px;
+        }
+    </style>
+
+    <h1>CSE 160<br/>Aegis Michael</h1>
+    <h3>Assignment Directory</h3>
+
+    <br></br>
+
+    <div class="directory">
+        <button id="asgn0">Assignment 0: Vector Library</button>
+        <button id="asgn1">Assignment 1: Painting</button>
+        <button id="asgn2">Assignment 2: Blocky Animal</button>
+    </div>
+
+    <script>
+        document.getElementById("asgn0").addEventListener("click", () => { window.location.href = "https://aegismichael4.github.io/CSE-160/asgn0/asg0.html"; });
+        document.getElementById("asgn1").addEventListener("click", () => { window.location.href = "https://aegismichael4.github.io/CSE-160/asgn1/Painting.html"; });
+        document.getElementById("asgn2").addEventListener("click", () => { window.location.href = "https://aegismichael4.github.io/CSE-160/asgn2/BlockyAnimal.html"; });    
+    </script>
 </body>
 
-<meta http-equiv="refresh" content="0; url=https://aegismichael4.github.io/CSE-160/asgn0/asg0.html"/>
+<!-- <meta http-equiv="refresh" content="0; url=https://aegismichael4.github.io/CSE-160/asgn0/asg0.html"/> -->
 
 </html>
