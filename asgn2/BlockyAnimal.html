@@ -7,7 +7,7 @@
 
   <body onload="main()">
 
-    <canvas id="webgl" width="400" height="400" display="flex" style="margin: 0px 10px 0px 0px;">
+    <canvas id="webgl" width="400" height="400" display="flex" style="margin: 0px 10px 0px 0px; border-radius: 12px;">
     Please use a browser that supports "canvas"
     </canvas>
     <p id="fps" style="margin-top: 0px;"></p>
@@ -24,11 +24,28 @@
       <label>Camera Angle:</label>
       <input type="range" id="rotation" min="-90" max="90" value="0"/>
 
+      <br></br>
+
+      <label>Thigh Joint Angle:</label>
+      <input type="range" id="thigh" min="-20" max="20" value="0" step="0.2"/>
+
       <br/>
+
+      <label>Calf Joint Angle:</label>
+      <input type="range" id="calf" min="-20" max="20" value="0" step="0.2"/>
+
+      <br></br>
 
       <label>Animation:</label>
       <button id="animationOn">On</button>
       <button id="animationOff">Off</button>
+
+      <br/>
+
+      <label>Animation Speed:</label>
+      <input type="range" id="animationSpeed" min="0" max="100" value="4" step=".2"/>
+    
+      
     </div>
 
   </body>

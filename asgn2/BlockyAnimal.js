@@ -118,7 +118,7 @@ function main() {
   canvas.onmousemove = click;
 
   // Specify the color for clearing <canvas>
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+  gl.clearColor(1.0, 0.7, 0.65, 1.0);
 
   tick();
 }
@@ -167,6 +167,16 @@ function setUpHTMLElements() {
     g_globalAngle = slider.value;
   });
 
+  const thigh = document.getElementById("thigh");
+  thigh.addEventListener("input", () => {
+    g_backThighRot = thigh.value;
+  });
+
+  const calf = document.getElementById("calf");
+  calf.addEventListener("input", () => {
+    g_backCalfRot = calf.value;
+  });
+
   const animationOn = document.getElementById("animationOn");
   animationOn.addEventListener("click", () => {
     g_animationPlaying = true;
@@ -175,6 +185,11 @@ function setUpHTMLElements() {
   const animationOff = document.getElementById("animationOff");
   animationOff.addEventListener("click", () => {
     g_animationPlaying = false;
+  });
+
+  const animationSpeed = document.getElementById("animationSpeed");
+  animationSpeed.addEventListener("input", () => {
+    g_animSpeed = animationSpeed.value;
   });
 }
 

@@ -1,18 +1,11 @@
 function setUpSheep() {
 
     animation();
-
-    // var butt = new Cube();
-    // butt.rgba = [1,1,1,1];
-    // butt.setScale(0.4,0.4,0.4);
-    // butt.setTranslate(0,-.1,0);
-    // butt.setRotation(45 + g_bodyRot, 0, 0, 1);
-    // butt.render();
     
-    const body = makeCube([1,1,1,1], [.6,.3,.3], [0,0,0], [g_bodyRot, 0, 0, 1]);
+    const body = makeCube([1,1,1,1], [.6,.3,.3], [-.2,0,0], [g_bodyRot, 0, 0, 1]);
     
-    const backRightThigh = makeCube([1,1,1,1], [.2,-.22,.15], [.08,0,.05], [-10, 0, 0, 1], body);
-    const backRightCalf = makeCube([1,1,1,1], [.1,-.25,.1], [.1,-.3,.08], [15, 0, 0, 1], backRightThigh);
+    const backRightThigh = makeCube([1,1,1,1], [.2,-.22,.15], [.08,0,.05], [-10 + g_backThighRot, 0, 0, 1], body);
+    const backRightCalf = makeCube([1,1,1,1], [.12,-.22,.1], [.13,-.3,.08], [13 + g_backCalfRot, 0, 0, 1], backRightThigh);
 
 }
 
@@ -34,7 +27,8 @@ function makeCube(rgba, scale, translate, rotation, parent) {
 var g_bodyRot = 0;
 var g_bodyHeight = 0;
 
-var g_legRot = 0;
+var g_backThighRot = 0;
+var g_backCalfRot = 0;
 
 var g_animSpeed = 4;
 
@@ -46,5 +40,6 @@ function animation() {
     g_bodyRot = Math.sin(animTime ) * 10;
     g_bodyHeight = Math.sin(animTime) * .05;
 
-    g_legRot = Math.sin(animTime) * 20;
+    g_backThighRot = Math.sin(animTime) * 20;
+    g_backCalfRot = Math.sin(animTime) * 10;
 }
