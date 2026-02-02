@@ -32,7 +32,7 @@ function setUpSheep() {
     
     const head = new LambHead();
     head.matrix = neck.getTranslatedMatrix();
-    head.setScale(0.17,0.17,0.25);
+    head.setScale(0.17,0.15,0.25);
     head.setTranslate(.19,.22,.08);
     head.setRotation(g_headRot + 25,0,0,1)
     head.render();
@@ -40,6 +40,13 @@ function setUpSheep() {
     const rEye = makeCube([.1,.1,.1,1], [.05,.05,.05], [.15,.15,0], [45, 0, 0, 1], head);
     const lEye = makeCube([.1,.1,.1,1], [.05,.05,.05], [.15,.15,.25], [45, 0, 0, 1], head);
     const nose = makeCube([0.8,.5,.5,1], [.05,.06,.08], [.35,.14,.13], [60, 0, 0, 1], head);
+
+    const rEar = makeCube([1,1,1,1], [.1,.05,-.2], [.02,.25,0], [g_rEarRot - 40, 1, 0, 0], head);
+    const rInnerEar = makeCube([0.8,.4,.5,1], [.09,.05,-.2], [.05,0,-.09], [0, 1, 0, 0], rEar);
+
+    const lEar = makeCube([1,1,1,1], [.1,.05,.2], [.02,.25,.27], [g_lEarRot + 40, 1, 0, 0], head);
+    const lInnerEar = makeCube([0.8,.4,.5,1], [.09,.05,.2], [.05,0,.09], [0, 1, 0, 0], lEar);
+
 }
 
 function makeCube(rgba, scale, translate, rotation, parent) {
@@ -79,7 +86,11 @@ var g_tail3Rot = 0;
 var g_neckRot = 0;
 var g_headRot = 0;
 
+var g_rEarRot = 0;
+var g_lEarRot = 0;
+
 var g_animSpeed = 8;
+
 
 function animation() {
     if (!g_animationPlaying) return;
@@ -107,4 +118,7 @@ function animation() {
 
     g_neckRot = Math.sin(animTime + .5) * 20 - 10;
     g_headRot = Math.sin(animTime + 1) * 10;
+
+    g_rEarRot = Math.sin(animTime + 2.7) * 20 + 20;
+    g_lEarRot = Math.sin(animTime + 2.3) * 20 - 20;
 }

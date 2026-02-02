@@ -102,7 +102,7 @@ function convertCoordinatesEventToGL(ev) {
 //#endregion
 
 // Global Variables
-var g_globalAngle = 0;
+var g_globalAngle = 60;
 var g_startTime = performance.now() / 1000;
 var g_seconds = 0;
 var g_animationPlaying = false;
