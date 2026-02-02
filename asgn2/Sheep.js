@@ -1,6 +1,9 @@
 function setUpSheep() {
 
     animation();
+
+    makeCube([0.6,1,0.7,1], [1.3,.2,1.3], [0,-.6,0], [0,0,0,1]); // grass
+    makeCube([0.7,0.5,0.4,1], [1.2,.5,1.2], [0,-.8,0], [0,0,0,1]); // ground
     
     const body = makeCube([1,1,1,1], [.6,.3,.3], [-.1,g_bodyHeight,0], [g_bodyRot, 0, 0, 1]);
     
@@ -41,10 +44,10 @@ function setUpSheep() {
     const lEye = makeCube([.1,.1,.1,1], [.05,.05,.05], [.15,.15,.25], [45, 0, 0, 1], head);
     const nose = makeCube([0.8,.5,.5,1], [.05,.06,.08], [.35,.14,.13], [60, 0, 0, 1], head);
 
-    const rEar = makeCube([1,1,1,1], [.1,.05,-.2], [.02,.25,0], [g_rEarRot - 40, 1, 0, 0], head);
+    const rEar = makeCube([1,1,1,1], [.1,.05,-.2], [.02,.24,0], [g_rEarRot - 40, 1, 0, 0], head);
     const rInnerEar = makeCube([0.8,.4,.5,1], [.09,.05,-.2], [.05,0,-.09], [0, 1, 0, 0], rEar);
 
-    const lEar = makeCube([1,1,1,1], [.1,.05,.2], [.02,.25,.27], [g_lEarRot + 40, 1, 0, 0], head);
+    const lEar = makeCube([1,1,1,1], [.1,.05,.2], [.02,.24,.27], [g_lEarRot + 40, 1, 0, 0], head);
     const lInnerEar = makeCube([0.8,.4,.5,1], [.09,.05,.2], [.05,0,.09], [0, 1, 0, 0], lEar);
 
 }
@@ -89,36 +92,97 @@ var g_headRot = 0;
 var g_rEarRot = 0;
 var g_lEarRot = 0;
 
-var g_animSpeed = 8;
+var g_animSpeed = 10;
 
 
 function animation() {
-    if (!g_animationPlaying) return;
 
     const animTime = g_animSpeed * g_seconds;
 
-    g_bodyRot = Math.sin(animTime ) * 12;
-    g_bodyHeight = Math.sin(animTime) * .08;
+    switch (g_currAnim) {
+    
+        case 1: 
 
-    g_brThighRot = Math.sin(animTime + 2.5) * 20;
-    g_brCalfRot = Math.sin(animTime + 3.5) * 30;
+            g_bodyRot = Math.sin(animTime ) * 12;
+            g_bodyHeight = Math.sin(animTime) * .08;
 
-    g_blThighRot = Math.sin(animTime + 2.8) * 20;
-    g_blCalfRot = Math.sin(animTime + 3.8) * 30;
+            g_brThighRot = Math.sin(animTime + 2.5) * 20;
+            g_brCalfRot = Math.sin(animTime + 3.5) * 30;
 
-    g_frThighRot = Math.sin(animTime + .5) * 20 + 20;
-    g_frCalfRot = Math.sin(animTime + 1.2) * 30 + 10;
+            g_blThighRot = Math.sin(animTime + 2.9) * 20;
+            g_blCalfRot = Math.sin(animTime + 3.9) * 30;
 
-    g_flThighRot = Math.sin(animTime + 1) * 20 + 20;
-    g_flCalfRot = Math.sin(animTime + 1.7) * 30 + 10;
+            g_frThighRot = Math.sin(animTime + .2) * 20 + 20;
+            g_frCalfRot = Math.sin(animTime + 0.9) * 40 + 10;
 
-    g_tail1Rot = Math.sin(animTime + 1.2) * -10;
-    g_tail2Rot = Math.sin(animTime + 2.2) * -20 - 20;
-    g_tail3Rot = Math.sin(animTime + 3.2) * -30 - 20;
+            g_flThighRot = Math.sin(animTime + 0.9) * 20 + 20;
+            g_flCalfRot = Math.sin(animTime + 1.6) * 40 + 10;
 
-    g_neckRot = Math.sin(animTime + .5) * 20 - 10;
-    g_headRot = Math.sin(animTime + 1) * 10;
+            g_tail1Rot = Math.sin(animTime + 1.2) * -10;
+            g_tail2Rot = Math.sin(animTime + 2.2) * -20 - 20;
+            g_tail3Rot = Math.sin(animTime + 3.2) * -30 - 20;
 
-    g_rEarRot = Math.sin(animTime + 2.7) * 20 + 20;
-    g_lEarRot = Math.sin(animTime + 2.3) * 20 - 20;
+            g_neckRot = Math.sin(animTime + .5) * 20 - 10;
+            g_headRot = Math.sin(animTime + 1) * 10;
+
+            g_rEarRot = Math.sin(animTime + 2.7) * 20 + 20;
+            g_lEarRot = Math.sin(animTime + 1.2) * 20 - 20;
+            
+            break;
+
+        case 2:
+
+            g_bodyRot = -20;
+
+            g_brThighRot = 35;
+            g_brCalfRot = -20;
+
+            g_blThighRot = 35;
+            g_blCalfRot = -20;
+
+            g_frThighRot = -50;
+            g_frCalfRot = 70;
+
+            g_flThighRot = -50;
+            g_flCalfRot = 70;
+
+            g_tail1Rot = Math.sin(.5 * animTime + 1.2) * -5;
+            g_tail2Rot = Math.sin(.5 * animTime + 2.2) * -5 - 5;
+            g_tail3Rot = Math.sin(.5 * animTime + 3.2) * -5 - 5;
+
+            g_neckRot = Math.sin(.8 * animTime) * Math.cos(animTime * 0.5) * 30 - 40;
+            g_headRot = Math.sin(.8 * animTime + .3) * Math.cos(animTime * 0.5  + .3) * 4;
+
+            g_rEarRot = Math.sin(animTime + 2.7) * 10 + 10;
+            g_lEarRot = Math.sin(animTime + 1.2) * 10 - 10;
+
+            break;
+    }
+}
+
+function resetPose() {
+    g_bodyRot = 0;
+    g_bodyHeight = 0;
+
+    g_brThighRot = 0;
+    g_brCalfRot = 0;
+
+    g_blThighRot = 0;
+    g_blCalfRot = 0;
+
+    g_frThighRot = 0;
+    g_frCalfRot = 0;
+
+    g_flThighRot = 0;
+    g_flCalfRot = 0;
+
+    g_tail1Rot = 0;
+    g_tail2Rot = 0;
+    g_tail3Rot = 0;
+
+    g_neckRot = 0;
+    g_headRot = 0;
+
+    g_rEarRot = 0;
+    g_lEarRot = 0;
 }

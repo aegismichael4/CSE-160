@@ -101,11 +101,56 @@ function convertCoordinatesEventToGL(ev) {
 
 //#endregion
 
+//#region HTML setup
+
+function sendTextToHTML(text, htmlID) {
+  htmlElm = document.getElementById(htmlID);
+  if (!htmlElm) {
+    console.log("Failed to get " + htmlID + " from HTML");
+    return;
+  }
+  htmlElm.innerHTML = text;
+}
+
+function setUpHTMLElements() {
+
+  const thigh = document.getElementById("thigh");
+  thigh.addEventListener("input", () => {
+    g_brThighRot = parseFloat(thigh.value);
+  });
+
+  const calf = document.getElementById("calf");
+  calf.addEventListener("input", () => {
+    g_brCalfRot = parseFloat(calf.value);
+  });
+
+  const animationOn = document.getElementById("animationOn");
+  animationOn.addEventListener("click", () => {
+    g_currAnim = 1;
+    resetPose();
+  });
+
+  const animationOff = document.getElementById("animationOff");
+  animationOff.addEventListener("click", () => {
+    g_currAnim = 0;
+    resetPose();
+  });
+
+  const animationSpeed = document.getElementById("animationSpeed");
+  animationSpeed.addEventListener("input", () => {
+    g_animSpeed = animationSpeed.value;
+  });
+}
+
+//#endregion
+
 // Global Variables
 var g_globalAngle = 60;
+var g_prevMouseX = 0;
 var g_startTime = performance.now() / 1000;
 var g_seconds = 0;
-var g_animationPlaying = false;
+var g_currAnim = 0;
+
 
 function main() {
   
@@ -118,13 +163,27 @@ function main() {
   canvas.onmousemove = click;
 
   // Specify the color for clearing <canvas>
-  gl.clearColor(1.0, 0.7, 0.65, 1.0);
+  gl.clearColor(1.0, 0.8, 0.75, 1.0);
 
   tick();
 }
 
  function click(ev) {
-  console.log("click!");
+
+  if (ev.buttons == 1) { // enforce click
+
+    if (ev.shiftKey) {
+      g_currAnim = 2;
+      resetPose();
+    }
+
+    const deltaX = ev.clientX - g_prevMouseX;
+
+    g_globalAngle -= deltaX;
+
+  }
+
+    g_prevMouseX = ev.clientX;
 }
 
 function tick() {
@@ -149,48 +208,3 @@ function renderAllShapes() {
   var duration = performance.now() - startTime;
   sendTextToHTML(" ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration), "fps");
 }
-
-//#region HTML setup
-
-function sendTextToHTML(text, htmlID) {
-  htmlElm = document.getElementById(htmlID);
-  if (!htmlElm) {
-    console.log("Failed to get " + htmlID + " from HTML");
-    return;
-  }
-  htmlElm.innerHTML = text;
-}
-
-function setUpHTMLElements() {
-  const cameraAngle = document.getElementById("cameraAngle");
-  cameraAngle.addEventListener("input", () => {
-    g_globalAngle = cameraAngle.value;
-  });
-
-  const thigh = document.getElementById("thigh");
-  thigh.addEventListener("input", () => {
-    g_brThighRot = parseFloat(thigh.value);
-  });
-
-  const calf = document.getElementById("calf");
-  calf.addEventListener("input", () => {
-    g_brCalfRot = parseFloat(calf.value);
-  });
-
-  const animationOn = document.getElementById("animationOn");
-  animationOn.addEventListener("click", () => {
-    g_animationPlaying = true;
-  });
-
-  const animationOff = document.getElementById("animationOff");
-  animationOff.addEventListener("click", () => {
-    g_animationPlaying = false;
-  });
-
-  const animationSpeed = document.getElementById("animationSpeed");
-  animationSpeed.addEventListener("input", () => {
-    g_animSpeed = animationSpeed.value;
-  });
-}
-
-//#endregion
