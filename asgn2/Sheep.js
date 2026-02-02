@@ -4,19 +4,25 @@ function setUpSheep() {
     
     const body = makeCube([1,1,1,1], [.6,.3,.3], [-.2,g_bodyHeight,0], [g_bodyRot, 0, 0, 1]);
     
-    const brThigh1 = makeCube([1,1,1,1], [.2,-.22,.15], [.08,0,.05], [g_backThighRot - 30, 0, 0, 1], body);
-    // const brThigh2 = makeCube([1,1,1,1], [.15,-.22,.15], [.2,0,.05], [0, 0, 0, 1], brThigh1);
-    // const brCalf = makeCube([1,1,1,1], [.12,-.22,.1], [.13,-.3,.08], [g_backCalfRot + 70, 0, 0, 1], brThigh1);
-    // const brHoof = makeCube([.3,.3,.3,1], [.15,-.1,.13], [0.06,-.25,.05], [-3, 0, 0, 1], brCalf);
+    const brThigh1 = makeCube([1,1,1,1], [.2,-.17,.15], [.06,.05,.05], [g_brThighRot - 5, 0, 0, 1], body);
+    const brThigh2 = makeCube([1,1,1,1], [.12,-.22,.15], [.2,-.19,.08], [-60, 0, 0, 1], brThigh1);
+    const brCalf = makeCube([1,1,1,1], [.12,-.22,.1], [.06,-.32,.08], [g_brCalfRot + 10, 0, 0, 1], brThigh1);
+    const brHoof = makeCube([.3,.3,.3,1], [.15,-.1,.13], [0.06,-.25,.05], [-3, 0, 0, 1], brCalf);
 
-    // const blThigh = makeCube([.95,.95,.95,1], [.2,-.22,.15], [.08,0,.25], [g_backThighRot - 10, 0, 0, 1], body);
-    // const blCalf = makeCube([.95,.95,.95,1], [.12,-.22,.1], [.13,-.3,.07], [g_backCalfRot + 13, 0, 0, 1], blThigh);
-    // const blHoof = makeCube([.2,.2,.2,1], [.15,-.1,.13], [0.06,-.25,.05], [-3, 0, 0, 1], blCalf);
+    const blThigh1 = makeCube([1,1,1,1], [.2,-.17,.15], [.06,.05,.25], [g_blThighRot - 5, 0, 0, 1], body);
+    const blThigh2 = makeCube([1,1,1,1], [.12,-.22,.15], [.2,-.19,.08], [-60, 0, 0, 1], blThigh1);
+    const blCalf = makeCube([1,1,1,1], [.12,-.22,.1], [.06,-.32,.08], [g_blCalfRot + 10, 0, 0, 1], blThigh1);
+    const blHoof = makeCube([.3,.3,.3,1], [.15,-.1,.13], [0.06,-.25,.05], [-3, 0, 0, 1], blCalf);
 
-    const frThigh1 = makeCube([1,1,1,1], [.15,-.22,.15], [.55,0,.05], [g_frontThighRot - 40, 0, 0, 1], body);
+    const frThigh1 = makeCube([1,1,1,1], [.15,-.22,.15], [.55,0,.05], [g_frThighRot - 40, 0, 0, 1], body);
     const frThigh2 = makeCube([1,1,1,1], [.1,-.15,.15], [.08,-.2,.075], [50, 0, 0, 1], frThigh1);
-    const frCalf = makeCube([1,1,1,1], [.1,-.23,.1], [.17,-.3,.08], [g_frontCalfRot + 35, 0, 0, 1], frThigh1);
+    const frCalf = makeCube([1,1,1,1], [.1,-.23,.1], [.17,-.3,.08], [g_frCalfRot + 35, 0, 0, 1], frThigh1);
     const frHoof = makeCube([.3,.3,.3,1], [.13,-.1,.13], [0.05,-.21,.05], [5, 0, 0, 1], frCalf);
+
+    const flThigh1 = makeCube([1,1,1,1], [.15,-.22,.15], [.55,0,.25], [g_flThighRot - 40, 0, 0, 1], body);
+    const flThigh2 = makeCube([1,1,1,1], [.1,-.15,.15], [.08,-.2,.075], [50, 0, 0, 1], flThigh1);
+    const flCalf = makeCube([1,1,1,1], [.1,-.23,.1], [.17,-.3,.08], [g_flCalfRot + 35, 0, 0, 1], flThigh1);
+    const flHoof = makeCube([.3,.3,.3,1], [.13,-.1,.13], [0.05,-.21,.05], [5, 0, 0, 1], flCalf);
 
 }
 
@@ -38,11 +44,17 @@ function makeCube(rgba, scale, translate, rotation, parent) {
 var g_bodyRot = 0;
 var g_bodyHeight = 0;
 
-var g_backThighRot = 0;
-var g_backCalfRot = 0;
+var g_brThighRot = 0;
+var g_brCalfRot = 0;
 
-var g_frontThighRot = 0;
-var g_frontCalfRot = 0;
+var g_blThighRot = 0;
+var g_blCalfRot = 0;
+
+var g_frThighRot = 0;
+var g_frCalfRot = 0;
+
+var g_flThighRot = 0;
+var g_flCalfRot = 0;
 
 var g_animSpeed = 8;
 
@@ -51,12 +63,19 @@ function animation() {
 
     const animTime = g_animSpeed * g_seconds;
 
-    g_bodyRot = Math.sin(animTime ) * 10;
-    g_bodyHeight = Math.sin(animTime) * .05;
+    g_bodyRot = Math.sin(animTime ) * 15;
+    g_bodyHeight = Math.sin(animTime) * .06;
 
-    g_backThighRot = Math.sin(animTime + 2.5) * 20;
-    g_backCalfRot = Math.sin(animTime + 3.5) * 20;
+    g_brThighRot = Math.sin(animTime + 2.5) * 20;
+    g_brCalfRot = Math.sin(animTime + 3.5) * 30;
 
-    g_frontThighRot = Math.sin(animTime + .8) * 20;
-    g_frontCalfRot = Math.sin(animTime + 1.8) * 20;
+    g_blThighRot = Math.sin(animTime + 2.8) * 20;
+    g_blCalfRot = Math.sin(animTime + 3.8) * 30;
+
+    g_frThighRot = Math.sin(animTime + .5) * 20 + 20;
+    g_frCalfRot = Math.sin(animTime + 1.2) * 30 + 10;
+
+    g_flThighRot = Math.sin(animTime + .8) * 20 + 20;
+    g_flCalfRot = Math.sin(animTime + 1.5) * 30 + 10;
+
 }

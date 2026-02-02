@@ -169,12 +169,12 @@ function setUpHTMLElements() {
 
   const thigh = document.getElementById("thigh");
   thigh.addEventListener("input", () => {
-    g_backThighRot = parseFloat(thigh.value);
+    g_brThighRot = parseFloat(thigh.value);
   });
 
   const calf = document.getElementById("calf");
   calf.addEventListener("input", () => {
-    g_backCalfRot = parseFloat(calf.value);
+    g_brCalfRot = parseFloat(calf.value);
   });
 
   const animationOn = document.getElementById("animationOn");
