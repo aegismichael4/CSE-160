@@ -26,10 +26,12 @@ var FSHADER_SOURCE = `
 
     uniform sampler2D u_Sampler;
     uniform vec4 u_FragColor;
+    uniform float u_TexColorWeight;
 
     void main() {
-      gl_FragColor = texture2D(u_Sampler, v_UV);
-      //gl_FragColor = vec4(v_UV, 0, 1);
+        float t = u_TexColorWeight;
+        gl_FragColor = (1.0 - t) * u_FragColor +  t * texture2D(u_Sampler, v_UV);
+        //gl_FragColor = vec4(v_UV, 0, 1);
     }`;
 
 // Global Variables
@@ -38,10 +40,12 @@ let gl;
 let a_Position;
 let a_UV;
 let u_Sampler;
+let u_FragColor;
 let u_ModelMatrix;
 let u_GlobalRotateMatrix;
 let u_ProjectionMatrix;
 let u_ViewMatrix;
+let u_TexColorWeight;
 
 //#region webgl setup
 
@@ -115,6 +119,20 @@ function connectVariablesToGLSL() {
         return false;
     }
 
+    // Get the storage location of u_FragColor
+    u_FragColor = gl.getUniformLocation(gl.program, 'u_FragColor');
+    if (!u_FragColor) {
+        console.log('Failed to get the storage location of u_FragColor');
+        return false;
+    }
+
+    // Get the storage location of u_Sampler
+    u_TexColorWeight = gl.getUniformLocation(gl.program, 'u_TexColorWeight');
+    if (!u_TexColorWeight) {
+        console.log('Failed to get the storage location of u_TexColorWeight');
+        return false;
+    }
+
     // set the initial value for all matrices to identity
     var identityM = new Matrix4();
     gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
@@ -154,71 +172,57 @@ var g_globalAngle = 0;
 var g_prevMouseX = 0;
 var g_startTime = performance.now() / 1000;
 var g_seconds = 0;
+var g_cube;
 
 function main() {
   
-  setUpWebGL();
-  connectVariablesToGLSL();
-  initTextures(gl, 3);
-//   setUpHTMLElements();
+    setUpWebGL();
+    connectVariablesToGLSL();
+    initTextures(gl, 3);
+    //   setUpHTMLElements();
 
-  // Register function (event handler) to be called on a mouse press
-  canvas.onmousedown = click;
-  canvas.onmousemove = click;
+    // Register function (event handler) to be called on a mouse press
+    canvas.onmousedown = click;
+    canvas.onmousemove = click;
 
-  // Specify the color for clearing <canvas>
-  gl.clearColor(1.0, 0.8, 0.75, 1.0);
+    // Specify the color for clearing <canvas>
+    gl.clearColor(1.0, 0.8, 0.75, 1.0);
 
-  tick();
+    // set up cube
+    g_cube = new Cube();
+
+    tick();
 }
 
  function click(ev) {
 
-  if (ev.buttons == 1) { // enforce click
-
-    const deltaX = ev.clientX - g_prevMouseX;
-
-    g_globalAngle -= deltaX;
-
-  }
-
+    if (ev.buttons == 1) { // enforce click
+        const deltaX = ev.clientX - g_prevMouseX;
+        g_globalAngle -= deltaX;
+    }
     g_prevMouseX = ev.clientX;
 }
 
-function tick() {
-  g_seconds = (performance.now() / 1000) - g_startTime;
-  renderAllShapes();
-  requestAnimationFrame(tick);
+    function tick() {
+    g_seconds = (performance.now() / 1000) - g_startTime;
+    renderAllShapes();
+    requestAnimationFrame(tick);
 }
 
-function renderAllShapes() {
-  // check the time at the start of the function
-  var startTime = performance.now();
+    function renderAllShapes() {
+    // check the time at the start of the function
+    var startTime = performance.now();
 
-  // Clear <canvas>
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    // Clear <canvas>
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  // pass the global rotation into u_GlobalRotateMatrix
-  var globalRotMat = new Matrix4().rotate(g_globalAngle, 0, 1, 0);
-  gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
+    // pass the global rotation into u_GlobalRotateMatrix
+    var globalRotMat = new Matrix4().rotate(g_globalAngle, 0, 1, 0);
+    gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
 
-  makeCube([.5,.5,.5,1], [1,1,1], [0,0,0], [0,0,0,1]);
+    g_cube.setCube([0,0,0], [.5,.5,.5], [1,0,0,1], 0.5);
+    g_cube.render();
 
-  var duration = performance.now() - startTime;
-  sendTextToHTML(" ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration), "fps");
-}
-
-function makeCube(rgba, scale, translate, rotation, parent) {
-
-    var cube = new Cube();
-    cube.rgba = rgba;
-
-    if (parent) cube.matrix = new Matrix4(parent.getTranslatedMatrix());
-    
-    cube.setScale(scale[0], scale[1], scale[2]);
-    cube.setTranslate(translate[0], translate[1], translate[2]);
-    cube.setRotation(rotation[0], rotation[1], rotation[2], rotation[3]);
-    cube.render();
-
-    return cube;
+    var duration = performance.now() - startTime;
+    sendTextToHTML(" ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration), "fps");
 }
