@@ -32,8 +32,4 @@ function loadTexture(gl, n, texture, u_Sampler, image) {
   
   // Set the texture unit 0 to the sampler
   gl.uniform1i(u_Sampler, 0);
-  
-  gl.clear(gl.COLOR_BUFFER_BIT);   // Clear <canvas>
-
-  gl.drawArrays(gl.TRIANGLE_STRIP, 0, n); // Draw the rectangle
 }

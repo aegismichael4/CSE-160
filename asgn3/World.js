@@ -1,6 +1,8 @@
 // TexturedQuad.js (c) 2012 matsuda and kanda
 // Vertex shader program
 var VSHADER_SOURCE =`
+    precision mediump float;
+
     attribute vec4 a_Position;
     attribute vec2 a_UV;
 
@@ -12,19 +14,22 @@ var VSHADER_SOURCE =`
     uniform mat4 u_ProjectionMatrix;
 
     void main() {
-    gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_GlobalRotateMatrix * u_ModelMatrix;
-    v_UV = a_UV;
+      gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_GlobalRotateMatrix * u_ModelMatrix * a_Position;
+      v_UV = a_UV;
     }`;
 
 // Fragment shader program
 var FSHADER_SOURCE = `
+    precision mediump float;
+
     varying vec2 v_UV;
-    
+
     uniform sampler2D u_Sampler;
     uniform vec4 u_FragColor;
 
     void main() {
-        gl_FragColor = u_FragColor;
+      gl_FragColor = texture2D(u_Sampler, v_UV);
+      //gl_FragColor = vec4(v_UV, 0, 1);
     }`;
 
 // Global Variables
@@ -32,7 +37,7 @@ let canvas;
 let gl;
 let a_Position;
 let a_UV;
-let u_FragColor;
+let u_Sampler;
 let u_ModelMatrix;
 let u_GlobalRotateMatrix;
 let u_ProjectionMatrix;
@@ -75,13 +80,6 @@ function connectVariablesToGLSL() {
         return;
     }
 
-    // Get the storage location of u_FragColor
-    u_FragColor = gl.getUniformLocation(gl.program, 'u_FragColor');
-    if (!u_FragColor) {
-        console.log('Failed to get the storage location of u_FragColor');
-        return;
-    }
-
     //get the storage location of u_ModelMatrix
     u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
     if (!u_ModelMatrix) {
@@ -111,7 +109,7 @@ function connectVariablesToGLSL() {
     }
 
     // Get the storage location of u_Sampler
-    var u_Sampler = gl.getUniformLocation(gl.program, 'u_Sampler');
+    u_Sampler = gl.getUniformLocation(gl.program, 'u_Sampler');
     if (!u_Sampler) {
         console.log('Failed to get the storage location of u_Sampler');
         return false;
@@ -161,6 +159,7 @@ function main() {
   
   setUpWebGL();
   connectVariablesToGLSL();
+  initTextures(gl, 3);
 //   setUpHTMLElements();
 
   // Register function (event handler) to be called on a mouse press
@@ -203,8 +202,23 @@ function renderAllShapes() {
   var globalRotMat = new Matrix4().rotate(g_globalAngle, 0, 1, 0);
   gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
 
-  //setUpSheep();
+  makeCube([.5,.5,.5,1], [1,1,1], [0,0,0], [0,0,0,1]);
 
   var duration = performance.now() - startTime;
   sendTextToHTML(" ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration), "fps");
+}
+
+function makeCube(rgba, scale, translate, rotation, parent) {
+
+    var cube = new Cube();
+    cube.rgba = rgba;
+
+    if (parent) cube.matrix = new Matrix4(parent.getTranslatedMatrix());
+    
+    cube.setScale(scale[0], scale[1], scale[2]);
+    cube.setTranslate(translate[0], translate[1], translate[2]);
+    cube.setRotation(rotation[0], rotation[1], rotation[2], rotation[3]);
+    cube.render();
+
+    return cube;
 }
