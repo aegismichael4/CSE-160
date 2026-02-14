@@ -28,6 +28,8 @@ class Cube {
         this.scale = scale;
         this.rgba = rgba;
         this.texColorWeight = texColorWeight;
+
+        this.render();
     }
 
     loadCube()

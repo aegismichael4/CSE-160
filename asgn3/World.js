@@ -9,12 +9,11 @@ var VSHADER_SOURCE =`
     varying vec2 v_UV;
 
     uniform mat4 u_ModelMatrix;
-    uniform mat4 u_GlobalRotateMatrix;
     uniform mat4 u_ViewMatrix;
     uniform mat4 u_ProjectionMatrix;
 
     void main() {
-      gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_GlobalRotateMatrix * u_ModelMatrix * a_Position;
+      gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_ModelMatrix * a_Position;
       v_UV = a_UV;
     }`;
 
@@ -42,7 +41,6 @@ let a_UV;
 let u_Sampler;
 let u_FragColor;
 let u_ModelMatrix;
-let u_GlobalRotateMatrix;
 let u_ProjectionMatrix;
 let u_ViewMatrix;
 let u_TexColorWeight;
@@ -91,13 +89,6 @@ function connectVariablesToGLSL() {
       return;
     }
 
-    //get the storage location of u_GlobalRotateMatrix
-    u_GlobalRotateMatrix = gl.getUniformLocation(gl.program, 'u_GlobalRotateMatrix');
-    if (!u_GlobalRotateMatrix) {
-      console.log("Failed to get the storage location of u_GlobalRotateMatrix");
-      return;
-    }
-
     //get the storage location of u_ViewMatrix
     u_ViewMatrix = gl.getUniformLocation(gl.program, 'u_ViewMatrix');
     if (!u_ViewMatrix) {
@@ -138,7 +129,6 @@ function connectVariablesToGLSL() {
     gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
     gl.uniformMatrix4fv(u_ViewMatrix, false, identityM.elements);
     gl.uniformMatrix4fv(u_ProjectionMatrix, false, identityM.elements);
-    gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, identityM.elements);
 }
 
 function convertCoordinatesEventToGL(ev) {
@@ -168,11 +158,10 @@ function sendTextToHTML(text, htmlID) {
 //#endregion
 
 // Global Variables
-var g_globalAngle = 0;
-var g_prevMouseX = 0;
-var g_startTime = performance.now() / 1000;
-var g_seconds = 0;
-var g_cube;
+let g_startTime = performance.now() / 1000;
+let g_seconds = 0;
+let g_camera;
+let g_cube;
 
 function main() {
   
@@ -181,12 +170,11 @@ function main() {
     initTextures(gl, 3);
     //   setUpHTMLElements();
 
-    // Register function (event handler) to be called on a mouse press
-    canvas.onmousedown = click;
-    canvas.onmousemove = click;
-
     // Specify the color for clearing <canvas>
     gl.clearColor(1.0, 0.8, 0.75, 1.0);
+
+    //camera
+    cameraSetUp();
 
     // set up cube
     g_cube = new Cube();
@@ -194,22 +182,39 @@ function main() {
     tick();
 }
 
- function click(ev) {
-
-    if (ev.buttons == 1) { // enforce click
-        const deltaX = ev.clientX - g_prevMouseX;
-        g_globalAngle -= deltaX;
-    }
-    g_prevMouseX = ev.clientX;
-}
-
-    function tick() {
+function tick() {
     g_seconds = (performance.now() / 1000) - g_startTime;
     renderAllShapes();
     requestAnimationFrame(tick);
 }
 
-    function renderAllShapes() {
+function cameraSetUp() {
+    g_camera = new Camera();
+    document.addEventListener('keydown', (e) => {
+       switch(e.key) {
+           case 'w':
+               g_camera.moveForwardBackward(1);
+               break;
+           case 'a':
+               g_camera.moveSide(-1);
+               break;
+           case 's':
+               g_camera.moveForwardBackward(-1);
+               break;
+           case 'd':
+               g_camera.moveSide(1);
+               break;
+           case 'q':
+               g_camera.panSide(-.1);
+               break;
+           case 'e':
+               g_camera.panSide(.1);
+               break;
+       }
+    });
+}
+
+function renderAllShapes() {
     // check the time at the start of the function
     var startTime = performance.now();
 
@@ -217,12 +222,20 @@ function main() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     // pass the global rotation into u_GlobalRotateMatrix
-    var globalRotMat = new Matrix4().rotate(g_globalAngle, 0, 1, 0);
-    gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
+    const viewMatrix = g_camera.getViewMatrix();
+    gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
 
-    g_cube.setCube([0,0,0], [.5,.5,.5], [1,0,0,1], 0.5);
-    g_cube.render();
+    scene();
 
     var duration = performance.now() - startTime;
     sendTextToHTML(" ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration), "fps");
+}
+
+function scene() {
+
+    //sky
+    //g_cube.setCube([-1,-1,-1], [2, 2, 2], [.2,.2,1,1], 0);
+
+    //test
+    g_cube.setCube([0,0,0], [.5,.5,.5], [1,0,0,1], 0.5);
 }
