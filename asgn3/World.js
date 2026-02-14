@@ -229,7 +229,7 @@ function main() {
   
     setUpWebGL();
     connectVariablesToGLSL();
-    initTextures(gl, 3);
+    initTextures(gl);
     setUpHTMLElements();
 
     canvas.onmousedown = click;
