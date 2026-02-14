@@ -10,6 +10,12 @@
     Please use a browser that supports "canvas"
     </canvas>
     <p id="fps" style="margin-top: 0px;"></p>
+    <p id="xyz"></p>
+
+    <div>
+      <label>chunk size:</label>
+      <input id="chunk-size" type="range" min="25" max="128" value="32" step="2"/>
+    </div>
 
     <script src="../lib/webgl-utils.js"></script>
     <script src="../lib/webgl-debug.js"></script>
@@ -20,5 +26,6 @@
     <script src="Cube.js"></script>
     <script src="Texture.js"></script>
     <script src="Camera.js"></script>
+    <script src="Map.js"></script>
   </body>
 </html>

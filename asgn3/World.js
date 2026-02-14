@@ -128,7 +128,11 @@ function connectVariablesToGLSL() {
     var identityM = new Matrix4();
     gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
     gl.uniformMatrix4fv(u_ViewMatrix, false, identityM.elements);
-    gl.uniformMatrix4fv(u_ProjectionMatrix, false, identityM.elements);
+
+    // set the projection matrix
+    const projMat = new Matrix4();
+    projMat.setPerspective(60, canvas.width/canvas.height, 0.1, 300);
+    gl.uniformMatrix4fv(u_ProjectionMatrix, false, projMat.elements);
 }
 
 function convertCoordinatesEventToGL(ev) {
@@ -155,6 +159,60 @@ function sendTextToHTML(text, htmlID) {
   htmlElm.innerHTML = text;
 }
 
+function setUpHTMLElements() {
+    const chunkSize = document.getElementById("chunk-size");
+    chunkSize.addEventListener("input", () => {
+        g_chunkSize = parseInt(chunkSize.value);
+    });
+    g_chunkSize = parseInt(chunkSize.value);
+}
+
+//#endregion
+
+//#region input handling
+
+function click(ev) {
+
+    if (ev.buttons == 1) { // enforce click
+
+        const deltaX = ev.clientX - g_prevMouseX;
+        const deltaY = ev.clientY - g_prevMouseY;
+
+        g_camera.panHorizontal(-0.5 * deltaX);
+        g_camera.panVertical( 0.5 * deltaY);
+
+    }
+
+    g_prevMouseX = ev.clientX;
+    g_prevMouseY = ev.clientY;
+}
+
+function cameraSetUp() {
+    g_camera = new Camera();
+    document.addEventListener('keydown', (e) => {
+        switch(e.key) {
+            case 'w':
+                g_camera.moveForwardBackward(.3);
+                break;
+            case 'a':
+                g_camera.moveSide(.3);
+                break;
+            case 's':
+                g_camera.moveForwardBackward(-.3);
+                break;
+            case 'd':
+                g_camera.moveSide(-.3);
+                break;
+            case 'q':
+                g_camera.panHorizontal(3);
+                break;
+            case 'e':
+                g_camera.panHorizontal(-3);
+                break;
+        }
+    });
+}
+
 //#endregion
 
 // Global Variables
@@ -162,13 +220,20 @@ let g_startTime = performance.now() / 1000;
 let g_seconds = 0;
 let g_camera;
 let g_cube;
+let g_prevMouseX;
+let g_prevMouseY;
+let g_worldPos;
+let g_chunkSize;
 
 function main() {
   
     setUpWebGL();
     connectVariablesToGLSL();
     initTextures(gl, 3);
-    //   setUpHTMLElements();
+    setUpHTMLElements();
+
+    canvas.onmousedown = click;
+    canvas.onmousemove = click;
 
     // Specify the color for clearing <canvas>
     gl.clearColor(1.0, 0.8, 0.75, 1.0);
@@ -188,32 +253,6 @@ function tick() {
     requestAnimationFrame(tick);
 }
 
-function cameraSetUp() {
-    g_camera = new Camera();
-    document.addEventListener('keydown', (e) => {
-       switch(e.key) {
-           case 'w':
-               g_camera.moveForwardBackward(1);
-               break;
-           case 'a':
-               g_camera.moveSide(-1);
-               break;
-           case 's':
-               g_camera.moveForwardBackward(-1);
-               break;
-           case 'd':
-               g_camera.moveSide(1);
-               break;
-           case 'q':
-               g_camera.panSide(-.1);
-               break;
-           case 'e':
-               g_camera.panSide(.1);
-               break;
-       }
-    });
-}
-
 function renderAllShapes() {
     // check the time at the start of the function
     var startTime = performance.now();
@@ -223,19 +262,18 @@ function renderAllShapes() {
 
     // pass the global rotation into u_GlobalRotateMatrix
     const viewMatrix = g_camera.getViewMatrix();
+   // console.log(viewMatrix);
     gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
+
+    const invView = viewMatrix.invert();
+    g_worldPos = [ invView.elements[12], invView.elements[13], invView.elements[14] ];
+    sendTextToHTML("x: " + g_worldPos[0].toPrecision(2) +
+                        ", y: " + g_worldPos[1].toPrecision(2) +
+                        ", z: " + g_worldPos[2].toPrecision(2),
+                 "xyz");
 
     scene();
 
     var duration = performance.now() - startTime;
     sendTextToHTML(" ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration), "fps");
-}
-
-function scene() {
-
-    //sky
-    //g_cube.setCube([-1,-1,-1], [2, 2, 2], [.2,.2,1,1], 0);
-
-    //test
-    g_cube.setCube([0,0,0], [.5,.5,.5], [1,0,0,1], 0.5);
 }
