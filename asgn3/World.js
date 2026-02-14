@@ -165,6 +165,14 @@ function setUpHTMLElements() {
         g_chunkSize = parseInt(chunkSize.value);
     });
     g_chunkSize = parseInt(chunkSize.value);
+
+    document.getElementById("add-sun").addEventListener("click", () => {
+       g_sun = true;
+    });
+
+    document.getElementById("remove-sun").addEventListener("click", () => {
+        g_sun = false;
+    });
 }
 
 //#endregion
@@ -224,6 +232,7 @@ let g_prevMouseX;
 let g_prevMouseY;
 let g_worldPos;
 let g_chunkSize;
+let g_sun = false;
 
 function main() {
   
