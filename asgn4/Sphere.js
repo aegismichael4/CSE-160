@@ -1,4 +1,4 @@
-class Cube {
+class Sphere {
 
     constructor(translate = [0,0,0],
                 scale = [1,1,1],
@@ -16,10 +16,10 @@ class Cube {
             return false;
         }
 
-        //this.loadCube();
+        //this.loadSphere();
     }
 
-    setCube(translate = [0,0,0],
+    setSphere(translate = [0,0,0],
             scale = [1,1,1],
             rgba = [1,1,1,1],
             texColorWeight = 1) {
@@ -32,57 +32,26 @@ class Cube {
         this.render();
     }
 
-    loadCube()
+    loadSphere()
     {
         const vertexUVBuffer = [];
 
-        // front of cube
-        vertexUVBuffer.push(0,0,0, 0,0, 0,0,1, // xyz, uv, normal
-                            1,1,0, 1,1, 0,0,1,
-                            1,0,0, 1,0, 0,0,1);
-        vertexUVBuffer.push(0,0,0, 0,0, 0,0,1,
-                            0,1,0, 0,1, 0,0,1,
-                            1,1,0, 1,1, 0,0,1);
+        let d = Math.PI/10;
+        let dd = Math.PI/100;
 
-        // top of cube
-        vertexUVBuffer.push(0,1,0, 0,0, 0,1,0,
-                            1,1,0, 1,0, 0,1,0,
-                            0,1,1, 0,1, 0,1,0);
-        vertexUVBuffer.push(1,1,0, 1,0, 0,1,0,
-                            0,1,1, 0,1, 0,1,0,
-                            1,1,1, 1,1, 0,1,0);
+        for (let t=0; t < Math.PI; t+=d) {
+            for (let r=0; r < (2*Math.PI); t+=d) {
+                let p1 = [sin(t)*cos(r), sin(t)*sin(r), cos(t)];
+                let p2 = [sin(t+dd)*cos(r), sin(t+dd)*sin(r), cos(t+dd)];
+                let p3 = [sin(t)*cos(r+dd), sin(t)*sin(r+dd), cos(t)];
+                let p4 = [sin(t+dd)*cos(r+dd), sin(t+dd)*sin(r+dd), cos(t+dd)];
 
-        // left side of cube
-        vertexUVBuffer.push(0,0,0, 1,0, -1,0,0,
-                            0,1,0, 1,1, -1,0,0,
-                            0,0,1, 0,0, -1,0,0);
-        vertexUVBuffer.push(0,1,1, 0,1, -1,0,0,
-                            0,1,0, 1,1, -1,0,0,
-                            0,0,1, 0,0, -1,0,0);
-
-        // right side of cube
-        vertexUVBuffer.push(1,0,0, 0,0, 1,0,0,
-                            1,1,0, 0,1, 1,0,0,
-                            1,0,1, 1,0, 1,0,0);
-        vertexUVBuffer.push(1,1,1, 1,1, 1,0,0,
-                            1,1,0, 0,1, 1,0,0,
-                            1,0,1, 1,0, 1,0,0);
-
-        // back of cube
-        vertexUVBuffer.push(0,0,1, 1,0, 0,0,-1,
-                            1,1,1, 0,1, 0,0,-1,
-                            1,0,1, 0,0, 0,0,-1);
-        vertexUVBuffer.push(0,0,1, 1,0, 0,0,-1,
-                            0,1,1, 1,1, 0,0,-1,
-                            1,1,1, 0,1, 0,0,-1);
-
-        //  bottom of cube
-        vertexUVBuffer.push(0,0,0, 0,1, 0,-1,0,
-                            0,0,1, 0,0, 0,-1,0,
-                            1,0,0, 1,1, 0,-1,0);
-        vertexUVBuffer.push(1,0,1, 1,0, 0,-1,0,
-                            0,0,1,0,0, 0,-1,0,
-                            1,0,0, 1,1, 0,-1,0);
+                vertexUVBuffer.push([...p1, 0,0, 1,0,0]);
+                vertexUVBuffer.push([...p2, 0,0, 1,0,0]);
+                vertexUVBuffer.push([...p3, 0,0, 1,0,0]);
+                vertexUVBuffer.push([...p4, 0,0, 1,0,0]);
+            }
+        }
 
         // bind vertex and uv data to this.buffer
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
@@ -123,3 +92,8 @@ class Cube {
 
     }
 }
+
+function sin(x) { return Math.sin(x); }
+function cos(x) { return Math.cos(x); }
+
+

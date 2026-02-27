@@ -7,12 +7,20 @@ function scene() {
     const x = Math.floor(g_worldPos[0]);
     const z = Math.floor(g_worldPos[2]);
 
+    g_cube.loadCube();
+
     g_cube.setCube([-10,0,-10], [20,.1,20], [.3,.3,.3, 1], 1); // floor
     g_cube.setCube([-10,7.5,-10], [20,.1,20], [.3,.3,.3, 1], 1); // ceiling
     g_cube.setCube([10,0,-10], [.1,7.5,20], [1,.3,.3, 1], 1); // wall
     g_cube.setCube([-10,0,-10], [.1,7.5,20], [1,.3,.3, 1], 1); // wall
     g_cube.setCube([-10,0,-10], [20,7.5,.1], [1,.3,.3, 1], 1); // wall
     g_cube.setCube([-10,0,10], [20,7.5,.1], [1,.3,.3, 1], 1); // wall
+
+    //g_cube.setCube();
+
+    g_sphere.loadSphere();
+
+    g_sphere.setSphere();
 }
 
 function simpleHash(str) {

@@ -241,6 +241,7 @@ let g_startTime = performance.now() / 1000;
 let g_seconds = 0;
 let g_camera;
 let g_cube;
+let g_sphere;
 let g_prevMouseX;
 let g_prevMouseY;
 let g_worldPos;
@@ -265,6 +266,7 @@ function main() {
 
     // set up cube
     g_cube = new Cube();
+    g_sphere = new Sphere();
 
     tick();
 }
