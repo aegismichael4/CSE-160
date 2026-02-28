@@ -87,12 +87,12 @@ class Shape {
         this.buffer = gl.createBuffer();
 
         // front of cube
-        vertexBuffer.push(  0,0,0, 0,0, 0,0,1, // xyz, uv, normal
-                            1,1,0, 1,1, 0,0,1,
-                            1,0,0, 1,0, 0,0,1);
-        vertexBuffer.push(  0,0,0, 0,0, 0,0,1,
-                            0,1,0, 0,1, 0,0,1,
-                            1,1,0, 1,1, 0,0,1);
+        vertexBuffer.push(  0,0,0, 0,0, 0,0,-1, // xyz, uv, normal
+                            1,1,0, 1,1, 0,0,-1,
+                            1,0,0, 1,0, 0,0,-1);
+        vertexBuffer.push(  0,0,0, 0,0, 0,0,-1,
+                            0,1,0, 0,1, 0,0,-1,
+                            1,1,0, 1,1, 0,0,-1);
 
         // top of cube
         vertexBuffer.push(  0,1,0, 0,0, 0,1,0,
@@ -119,19 +119,19 @@ class Shape {
                             1,0,1, 1,0, 1,0,0);
 
         // back of cube
-        vertexBuffer.push(  0,0,1, 1,0, 0,0,-1,
-                            1,1,1, 0,1, 0,0,-1,
-                            1,0,1, 0,0, 0,0,-1);
-        vertexBuffer.push(  0,0,1, 1,0, 0,0,-1,
-                            0,1,1, 1,1, 0,0,-1,
-                            1,1,1, 0,1, 0,0,-1);
+        vertexBuffer.push(  0,0,1, 1,0, 0,0,1,
+                            1,1,1, 0,1, 0,0,1,
+                            1,0,1, 0,0, 0,0,1);
+        vertexBuffer.push(  0,0,1, 1,0, 0,0,1,
+                            0,1,1, 1,1, 0,0,1,
+                            1,1,1, 0,1, 0,0,1);
 
         //  bottom of cube
         vertexBuffer.push(  0,0,0, 0,1, 0,-1,0,
                             0,0,1, 0,0, 0,-1,0,
                             1,0,0, 1,1, 0,-1,0);
         vertexBuffer.push(  1,0,1, 1,0, 0,-1,0,
-                            0,0,1,0,0, 0,-1,0,
+                            0,0,1, 0,0, 0,-1,0,
                             1,0,0, 1,1, 0,-1,0);
 
         this.numVertices = 36;
