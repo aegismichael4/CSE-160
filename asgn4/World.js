@@ -9,6 +9,7 @@ var VSHADER_SOURCE =`
 
     varying vec2 v_UV;
     varying vec3 v_Normal;
+    varying vec4 v_VertPos;
 
     uniform mat4 u_ModelMatrix;
     uniform mat4 u_ViewMatrix;
@@ -16,8 +17,10 @@ var VSHADER_SOURCE =`
 
     void main() {
       gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_ModelMatrix * a_Position;
+      
       v_UV = a_UV;
       v_Normal = a_Normal;
+      v_VertPos = u_ModelMatrix * a_Position;
     }`;
 
 // Fragment shader program
@@ -26,16 +29,23 @@ var FSHADER_SOURCE = `
 
     varying vec2 v_UV;
     varying vec3 v_Normal;
+    varying vec4 v_VertPos;
 
     uniform sampler2D u_Sampler;
     uniform vec4 u_FragColor;
     uniform float u_TexColorWeight;
+    uniform vec3 u_LightPos;
 
     void main() {
         float t = u_TexColorWeight;
         gl_FragColor = (1.0 - t) * u_FragColor +  t * texture2D(u_Sampler, v_UV);
         //gl_FragColor = vec4(v_UV, 0, 1);
-        gl_FragColor = vec4(v_Normal, 1);
+        
+        vec3 lightVector = vec3(v_VertPos) - u_LightPos;
+        float r = 1.0 - length(lightVector) / 15.0;
+        gl_FragColor = vec4(r,r,r,1);
+        
+        //gl_FragColor = vec4(v_Normal, 1);
     }`;
 
 // Global Variables
@@ -50,6 +60,7 @@ let u_ModelMatrix;
 let u_ProjectionMatrix;
 let u_ViewMatrix;
 let u_TexColorWeight;
+let u_LightPos;
 
 //#region webgl setup
 
@@ -130,10 +141,17 @@ function connectVariablesToGLSL() {
         return false;
     }
 
-    // Get the storage location of u_Sampler
+    // Get the storage location of u_TexColorWeight
     u_TexColorWeight = gl.getUniformLocation(gl.program, 'u_TexColorWeight');
     if (!u_TexColorWeight) {
         console.log('Failed to get the storage location of u_TexColorWeight');
+        return false;
+    }
+
+    // Get the storage location of u_LightPos
+    u_LightPos = gl.getUniformLocation(gl.program, 'u_LightPos');
+    if (!u_LightPos) {
+        console.log('Failed to get the storage location of u_LightPos');
         return false;
     }
 
@@ -240,13 +258,11 @@ function cameraSetUp() {
 let g_startTime = performance.now() / 1000;
 let g_seconds = 0;
 let g_camera;
-let g_cube;
-let g_sphere;
+let g_shape;
 let g_prevMouseX;
 let g_prevMouseY;
 let g_worldPos;
-let g_chunkSize;
-let g_sun = false;
+let g_lightPos;
 
 function main() {
   
@@ -265,8 +281,7 @@ function main() {
     cameraSetUp();
 
     // set up cube
-    g_cube = new Cube();
-    g_sphere = new Sphere();
+    g_shape = new Shape();
 
     tick();
 }

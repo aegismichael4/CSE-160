@@ -54,7 +54,7 @@ function setUpSheep() {
 
 function makeCube(rgba, scale, translate, rotation, parent) {
 
-    var cube = new Cube();
+    var cube = new Shape();
     cube.rgba = rgba;
 
     if (parent) cube.matrix = new Matrix4(parent.getTranslatedMatrix());

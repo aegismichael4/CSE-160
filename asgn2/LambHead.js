@@ -1,4 +1,4 @@
-class LambHead extends Cube {
+class LambHead extends Shape {
     constructor() {
         super();
     }

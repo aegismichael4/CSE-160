@@ -251,7 +251,7 @@ function main() {
     cameraSetUp();
 
     // set up cube
-    g_cube = new Cube();
+    g_cube = new Shape();
 
     tick();
 }
