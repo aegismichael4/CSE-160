@@ -18,7 +18,29 @@
     <p id="xyz"></p>
 
 
-    <button id="toggle-light" style="margin-top:10px">toggle light</button>
+    <div>
+      <button id="toggle-light" style="margin-top:10px">Toggle Light</button>
+
+      <br>
+      <label>Diffuse: R</label>
+      <input id="d-red" type="range" min="0" max="1" step=".05" value="1" style="width: 75px">G
+      <input id="d-green" type="range" min="0" max="1" step=".05" value="1" style="width: 75px">B
+      <input id="d-blue" type="range" min="0" max="1" step=".05" value="1" style="width: 75px">
+
+      <br>
+      <label>Specular: R</label>
+      <input id="s-red" type="range" min="0" max="1" step=".05" value="1" style="width: 75px">G
+      <input id="s-green" type="range" min="0" max="1" step=".05" value="1" style="width: 75px">B
+      <input id="s-blue" type="range" min="0" max="1" step=".05" value="1" style="width: 75px">
+
+      <br>
+      <label>Position:</label>
+      <input id="position" type="range" min="1.57" max="4.71" step=".05" value="3.14" style="width: 280px">
+    </div>
+
+    <br>
+    <button id="toggle-normals" style="margin-top:10px">Toggle Normals</button>
+
 
     <script src="../lib/webgl-utils.js"></script>
     <script src="../lib/webgl-debug.js"></script>

@@ -35,12 +35,15 @@ var FSHADER_SOURCE = `
     uniform vec4 u_FragColor;
     uniform float u_TexColorWeight;
     uniform vec3 u_LightPos;
+    uniform vec3 u_DiffuseCol;
+    uniform vec3 u_SpecularCol;
     uniform vec3 u_CameraPos;
     uniform float u_Roughness;
     uniform float u_LightEnabled;
+    uniform float u_NormalsEnabled;
 
     void main() {
-        // color/texture
+        // color & texture
         float t = u_TexColorWeight;
         vec4 col = (1.0 - t) * u_FragColor +  t * texture2D(u_Sampler, v_UV);
          
@@ -57,15 +60,16 @@ var FSHADER_SOURCE = `
         vec3 E = normalize(u_CameraPos - vec3(v_VertPos));
 
         // calculate lighting
-        vec3 diffuse = vec3(col) * nDotL;
-        vec3 ambient = vec3(col) * 0.2;
-        float specular = pow( max(dot(E,R), 0.0), 20.0) * (1.0 - u_Roughness);
+        vec3 diffuse = vec3(col) * u_DiffuseCol * nDotL;
+        vec3 ambient = vec3(col) * 0.3;
+        vec3 specular = u_SpecularCol * pow( max(dot(E,R), 0.0), 20.0) * (1.0 - u_Roughness);
         gl_FragColor = u_LightEnabled * vec4(specular + diffuse + ambient, 1) + (1.0 - u_LightEnabled) * col;
+        
+        if (u_NormalsEnabled > 0.0) gl_FragColor = vec4(0.5 + v_Normal, 1);
         
         //debug
         //gl_FragColor = vec4(v_UV, 0, 1);
         //gl_FragColor = vec4(v_Normal, 1);
-        
     }`;
 
 // Global Variables
@@ -81,9 +85,12 @@ let u_ProjectionMatrix;
 let u_ViewMatrix;
 let u_TexColorWeight;
 let u_LightPos;
+let u_DiffuseCol;
+let u_SpecularCol;
 let u_CameraPos;
 let u_Roughness;
 let u_LightEnabled;
+let u_NormalsEnabled;
 
 //#region webgl setup
 
@@ -178,6 +185,20 @@ function connectVariablesToGLSL() {
         return false;
     }
 
+    // Get the storage location of u_DiffuseCol
+    u_DiffuseCol = gl.getUniformLocation(gl.program, 'u_DiffuseCol');
+    if (!u_DiffuseCol) {
+        console.log('Failed to get the storage location of u_DiffuseCol');
+        return false;
+    }
+
+    // Get the storage location of u_SpecularCol
+    u_SpecularCol = gl.getUniformLocation(gl.program, 'u_SpecularCol');
+    if (!u_SpecularCol) {
+        console.log('Failed to get the storage location of u_SpecularCol');
+        return false;
+    }
+
     // Get the storage location of u_CameraPos
     u_CameraPos = gl.getUniformLocation(gl.program, 'u_CameraPos');
     if (!u_CameraPos) {
@@ -192,10 +213,17 @@ function connectVariablesToGLSL() {
         return false;
     }
 
-    // Get the storage location of u_Roughness
+    // Get the storage location of u_LightEnabled
     u_LightEnabled = gl.getUniformLocation(gl.program, 'u_LightEnabled');
     if (!u_LightEnabled) {
         console.log('Failed to get the storage location of u_LightEnabled');
+        return false;
+    }
+
+    // Get the storage location of u_NormalsEnabled
+    u_NormalsEnabled = gl.getUniformLocation(gl.program, 'u_NormalsEnabled');
+    if (!u_NormalsEnabled) {
+        console.log('Failed to get the storage location of u_NormalsEnabled');
         return false;
     }
 
@@ -237,6 +265,45 @@ function sendTextToHTML(text, htmlID) {
 function setUpHTMLElements() {
     document.getElementById("toggle-light").addEventListener("click", () => {
         g_toggleLight = !g_toggleLight;
+    });
+
+    // diffuse light color
+    const dr = document.getElementById("d-red");
+    dr.addEventListener("input", () => {
+       g_diffuseCol[0] = dr.value;
+    });
+    const dg = document.getElementById("d-green");
+    dg.addEventListener("input", () => {
+        g_diffuseCol[1] = dg.value;
+    });
+    const db = document.getElementById("d-blue");
+    db.addEventListener("input", () => {
+        g_diffuseCol[2] = db.value;
+    });
+
+    // specular light color
+    const sr = document.getElementById("s-red");
+    sr.addEventListener("input", () => {
+        g_specularCol[0] = sr.value;
+    });
+    const sg = document.getElementById("s-green");
+    sg.addEventListener("input", () => {
+        g_specularCol[1] = sg.value;
+    });
+    const sb = document.getElementById("s-blue");
+    sb.addEventListener("input", () => {
+        g_specularCol[2] = sb.value;
+    });
+
+    // light position
+    const pos = document.getElementById("position");
+    pos.addEventListener("input", () => {
+       g_positionSlider = pos.value;
+        g_lightPosSetFlag = true;
+    });
+
+    document.getElementById("toggle-normals").addEventListener("click", () => {
+        g_toggleNormals = !g_toggleNormals;
     });
 }
 
@@ -297,7 +364,12 @@ let g_prevMouseX;
 let g_prevMouseY;
 let g_worldPos;
 let g_lightPos;
+let g_positionSlider;
+let g_lightPosSetFlag = false;
 let g_toggleLight = true;
+let g_diffuseCol = [1,1,1];
+let g_specularCol = [1,1,1];
+let g_toggleNormals = false;
 
 function main() {
   
@@ -346,6 +418,13 @@ function renderAllShapes() {
                         ", y: " + g_worldPos[1].toPrecision(2) +
                         ", z: " + g_worldPos[2].toPrecision(2),
                  "xyz");
+
+    // light values
+    gl.uniform3f(u_DiffuseCol, ...g_diffuseCol);
+    gl.uniform3f(u_SpecularCol, ...g_specularCol);
+
+    // normals
+    gl.uniform1f(u_NormalsEnabled, g_toggleNormals ? 1.0 : 0.0);
 
     scene();
 

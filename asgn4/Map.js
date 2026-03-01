@@ -27,27 +27,30 @@ function scene() {
 
     //#endregion
 
-    // light bulb
+    // eyeball
     g_shape.loadSphere();
-    lightEnabled(false);
-    setLightPosition();
-    g_shape.setShape([g_lightPos[0]+.25, g_lightPos[1], g_lightPos[2]+.25], [.4,.3,.3], [1,1,1,1], 0);
-    gl.uniform3f(u_LightPos, ...g_lightPos);
-
-    lightEnabled(true);
     setRoughness(0);
     g_shape.setShape([2,-5,2]);
 
+    // light bulb
+    lightEnabled(false);
+    setLightPosition();
+    g_shape.setShape([g_lightPos[0]+.25, g_lightPos[1], g_lightPos[2]+.25], [.4,.3,.3], [...g_diffuseCol,1], 0);
+    gl.uniform3f(u_LightPos, ...g_lightPos);
 }
 
 function setLightPosition() {
-    let x = sin(g_seconds) * Math.PI / 2;
-    let y = sin(g_seconds*2 + 3*Math.PI/2) / 3  - 3;
+
+    let t = g_seconds;
+    if (g_lightPosSetFlag) t = g_positionSlider;
+
+    let x = sin(t) * Math.PI / 2;
+    let y = sin(t*2 + 3*Math.PI/2) / 3  - 3;
     g_lightPos = [x-.2,y,-x-.2];
 }
 
 function ropeRotation() {
-    return sin(g_seconds) * 40;
+    return sin(g_lightPosSetFlag ? g_positionSlider : g_seconds) * 40;
 }
 
 function setRoughness(roughness) {
