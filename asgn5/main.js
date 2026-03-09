@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {OBJLoader} from 'three/addons/loaders/OBJLoader.js';
+import {MTLLoader} from "three/addons/loaders/MTLLoader.js";
 
 //#region Rendering
 
@@ -89,6 +91,20 @@ scene.add(pointLight);
 
 //#endregion
 
+//#region OBJ File
+
+const mtlLoader = new MTLLoader();
+mtlLoader.load('../resources/marcy-playground-model/marcy-playground.mtl', (mtl) => {
+    mtl.preload();
+    objLoader.setMaterials(mtl);
+})
+const objLoader = new OBJLoader();
+objLoader.load('../resources/marcy-playground-model/marcy-playground.obj', (root) => {
+    scene.add(root);
+});
+
+//#endregion
+
 //#region Scene
 
 addCube(4, .1, 4, 0, 2, 0, wallMaterial); // ceiling
@@ -106,6 +122,16 @@ function addCube(width, height, depth, x, y, z, material, wS = 100, hS = 100, dS
     scene.add( cube );
 }
 
+for (let i = 0; i < 20; i++) {
+    addCube(1, 1, 1, i*2 - 20, 0, 10);
+}
+
+// sphere
+const geometry = new THREE.SphereGeometry( 1,  );
+const cube = new THREE.Mesh( geometry, material );
+cube.position.set(x, y, z);
+scene.add( cube );
+
 camera.position.z = 3;
 
 function animate( time ) {
@@ -116,3 +142,4 @@ function animate( time ) {
 renderer.setAnimationLoop( animate );
 
 //#endregion
+

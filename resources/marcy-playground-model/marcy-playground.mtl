@@ -1,0 +1,32 @@
+# Blender 4.4.3 MTL File: 'marcy-playground.blend'
+# www.blender.org
+
+newmtl Black_Ring
+Ns 780.430359
+Ka 0.963731 0.963731 0.963731
+Kd 0.000000 0.000000 0.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+
+newmtl Flower
+Ns 640.000000
+Ka 0.100000 0.100000 0.100000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_Kd marcy-playground_Flower_BaseColor.png
+
+newmtl Head
+Ns 586.490479
+Ka 0.053910 0.053910 0.053910
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd marcy-playground_Head_BaseColor.png
