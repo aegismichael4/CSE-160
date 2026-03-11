@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {OBJLoader} from 'three/addons/loaders/OBJLoader.js';
 import {MTLLoader} from "three/addons/loaders/MTLLoader.js";
+import { GroundedSkybox } from 'three/addons/objects/GroundedSkybox.js';
 
 //#region Rendering
 
@@ -39,6 +40,8 @@ const mfRough = loadTexture( '../resources/macro-flour/macro_flour_rough_2k.jpg'
 
 // background
 const backgroundTex = loadTexture('../resources/marcy-playground-background.jpg');
+
+//const envMap = loadTexture('../resources/grasslands_sunset_2k.exr');
 
 //#endregion
 
@@ -105,6 +108,18 @@ objLoader.load('../resources/marcy-playground-model/marcy-playground.obj', (root
 
 //#endregion
 
+//#region Skybox
+
+const texture = textureLoader.load(
+    '../resources/grasslands.png',
+    () => {
+        texture.mapping = THREE.EquirectangularReflectionMapping;
+        texture.colorSpace = THREE.SRGBColorSpace;
+        scene.background = texture;
+    });
+
+//#endregion
+
 //#region Scene
 
 addCube(4, .1, 4, 0, 2, 0, wallMaterial); // ceiling
@@ -127,16 +142,21 @@ for (let i = 0; i < 20; i++) {
 }
 
 // sphere
-const geometry = new THREE.SphereGeometry( 1,  );
-const cube = new THREE.Mesh( geometry, material );
-cube.position.set(x, y, z);
-scene.add( cube );
+const sphereGeometry = new THREE.SphereGeometry( 1  );
+const sphere = new THREE.Mesh( sphereGeometry, backgroundMaterial );
+sphere.position.set(-5,0,0);
+scene.add( sphere );
+
+// cylinder
+const cylinderGeometry = new THREE.CylinderGeometry(1, 1, 3);
+const cylinder = new THREE.Mesh( cylinderGeometry, backgroundMaterial );
+cylinder.position.set(5,0,0);
+scene.add( cylinder );
 
 camera.position.z = 3;
 
 function animate( time ) {
-    //cube.rotation.x = time / 2000;
-    //cube.rotation.y = time / 1000;
+    cylinder.rotation.x = time / 2000;
     renderer.render( scene, camera );
 }
 renderer.setAnimationLoop( animate );
